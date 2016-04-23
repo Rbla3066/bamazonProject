@@ -1,7 +1,6 @@
 {
   "name": "mysqlhw",
   "version": "1.0.0",
-  "description": "",
   "main": "BamazonCustomer.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,5 +10,15 @@
   "dependencies": {
     "mysql": "^2.10.2",
     "prompt": "^1.0.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rbla3066/bamazonProject.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Rbla3066/bamazonProject/issues"
+  },
+  "homepage": "https://github.com/Rbla3066/bamazonProject#readme",
+  "description": ""
 }
