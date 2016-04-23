@@ -1,5 +1,7 @@
 var mysql = require("mysql");
 var prompt = require("prompt");
+var fs = require("fs");
+var open = require("open");
 
 var connection = mysql.createConnection({
 	host: "localhost",
@@ -71,6 +73,24 @@ function viewProducts(){
 	for(var i=0; i<products.length; i++){
 		console.log(products[i].ItemID+". "+products[i].ProductName + ": $"+products[i].Price+" ("+products[i].Quantity+" available)");
 	};
+	var html = "<DOCTYPE! html><html><head><title>Product List</title><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' integrity='sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7' crossorigin='anonymous'></head><body><div style='margin: 50px'><table class='table table-striped table-bordered'><tr><th>#</th><th>Product</th><th>Department</th><th>Price</th><th>Quantity</th></tr>";
+	for(var i=0; i<products.length; i++){
+		var color;
+		if(parseInt(products[i].Quantity) < 5){
+			color = "danger";
+		} else {
+			color = "success";
+		};
+		html += "<tr class='"+color+"'><td class='info'>" + products[i].ItemID + "</td><td>" + products[i].ProductName + "</td><td>" + products[i].DepartmentName + "</td><td>" + parseFloat(products[i].Price).toFixed(2) + "</td><td>" + products[i].Quantity + "</td></tr>";
+	};
+	html += "</div></table></body></html>";
+	fs.writeFile("products.html", html, "utf-8", function(err){
+		if(err){
+			endConnect();
+		} else {
+			open("./products.html");
+		}
+	})
 	askAgain();
 };
 function viewLowProducts(){
@@ -82,7 +102,24 @@ function viewLowProducts(){
 			console.log(products[i].ItemID+") "+products[i].ProductName + ": $"+products[i].Price+" ("+products[i].Quantity+" available)");
 		};
 	};
-	if(count == 0) console.log("\nNo items low in inventory");
+	if(count == 0){
+		console.log("\nNo items low in inventory");
+	} else {
+		var html = "<DOCTYPE! html><html><head><title>Product List</title><link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css' integrity='sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7' crossorigin='anonymous'></head><body><div style='margin: 50px'><table class='table table-striped table-bordered'><tr><th>#</th><th>Product</th><th>Department</th><th>Price</th><th>Quantity</th></tr>";
+		for(var i=0; i<products.length; i++){
+			if(parseInt(products[i].Quantity) < 5){
+				html += "<tr class='danger'><td class='info'>" + products[i].ItemID + "</td><td>" + products[i].ProductName + "</td><td>" + products[i].DepartmentName + "</td><td>" + parseFloat(products[i].Price).toFixed(2) + "</td><td>" + products[i].Quantity + "</td></tr>";
+			};
+		};
+		html += "</div></table></body></html>";
+		fs.writeFile("low.html", html, "utf-8", function(err){
+			if(err){
+				endConnect();
+			} else {
+				open("./low.html");
+			}
+		})
+	}
 	askAgain();
 };
 function addInventory(){
@@ -145,7 +182,6 @@ function askAgain(){
 	console.log("\nWould you like to preform more tasks?")
 	prompt.get(["Y/N"], function(err, result){
 		if(err){
-			console.log(err)
 			endConnect();
 		} else if(result["Y/N"] == "Y" || result["Y/N"] == "y") {
 			listOptions();
