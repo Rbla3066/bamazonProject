@@ -23,7 +23,7 @@ function getTable(callback){
 };
 function listTable(){
 	for(var i=0; i<products.length; i++){
-		console.log(products[i].ItemID+". "+products[i].ProductName + ": $"+products[i].Price+" ("+products[i].Quantity+" available)");
+		console.log(products[i].ItemID+". "+products[i].ProductName + ": $"+products[i].Price+" ("+products[i].Quantity+" available) " + products[i].DepartmentName);
 	};
 	promptUser();
 };
@@ -44,9 +44,30 @@ function promptUser(){
 		} else{
 			var price = parseFloat(products[id-1].Price);
 			console.log(products[parseInt(id)-1].ProductName+" purchased successfully!!");
-			console.log("Total cost: $"+(price * num).toFixed(2));
+			console.log("Total Price: $"+(price * num).toFixed(2));
 			changeQuantity(id, num);
+			setTotalSales(products[id-1].DepartmentName, price);
 		};
+	});
+};
+function setTotalSales(department, price){
+	connection.query("SELECT * FROM Departments", function(err, rows){
+		if(err) endConnect();
+		var current;
+		for(var i=0; i<rows.length; i++){
+			if(rows[i].DepartmentName == department){
+				current = parseFloat(rows[i].TotalSales);
+				break;
+			};
+		};
+		var newTotal = (current + price).toFixed(2);
+		connection.query(
+			"UPDATE Departments SET TotalSales = ? WHERE DepartmentName = ?",
+			[newTotal, department],
+			function(err, result){
+				if(err) throw err;
+			}
+		);
 	});
 };
 function changeQuantity(id, quantity){

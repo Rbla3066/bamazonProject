@@ -9,6 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "mysql": "^2.10.2",
+    "open": "0.0.5",
     "prompt": "^1.0.0"
   },
   "devDependencies": {},
